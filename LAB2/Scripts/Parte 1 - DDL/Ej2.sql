@@ -1,12 +1,12 @@
-# En caso de tener la DB anteriormente, eliminar
+# En caso de tener anteriormente la DB, eliminar (para ejecutar los scripts desde el principio)
 DROP DATABASE IF EXISTS world;
 
-# Creo y uso la db
+# Crear la DB y usarla
 CREATE DATABASE world;
 USE world;
 
-# Creo las tablas con sus relaciones
-# Tabla padre de Country
+# Crear las tablas y sus relaciones
+# Tabla padre country
 CREATE TABLE country (
 	Code CHAR(3) NOT NULL,
 	Name VARCHAR(50) NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE country (
 	PRIMARY KEY(Code)
 );
 
-# Tabla City hija de Country
+# Tabla city hija de country --> relacionados por country(Code)
 CREATE TABLE city (
 	ID INT NOT NULL AUTO_INCREMENT,
 	Name VARCHAR(50) NOT NULL,
@@ -39,13 +39,13 @@ CREATE TABLE city (
 	FOREIGN KEY(CountryCode) REFERENCES country(Code)
 );
 
-# Tabla CountryLanguage hija de Country
+# Tabla countrylanguage hija de country --> relaciondos por country(Code)
 CREATE TABLE countrylanguage (
 	CountryCode CHAR(3) NOT NULL,
-	Language VARCHAR(50) NOT NULL,
+	`Language` VARCHAR(50) NOT NULL,
 	IsOfficial CHAR(1),
 	Percentage DOUBLE,
 	
-	PRIMARY KEY(CountryCode, Language),
+	PRIMARY KEY(CountryCode, `Language`),
 	FOREIGN KEY(CountryCode) REFERENCES country(Code)
 );
