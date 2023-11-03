@@ -1,0 +1,25 @@
+/*
+    Ejercicio 9:
+
+    Remover todos los comentarios realizados por el usuario cuyo email es 
+    victor_patel@fakegmail.com durante el año 1980.
+*/
+
+use("mflix");
+
+const last_info = db.comments.find({
+    "email": "victor_patel@fakegmail.com",
+    "date": { $gt: new Date("1979-12-31"), $lt: new Date("1981-01-01") }
+});
+console.log(" LAST INFO: ", last_info);
+
+db.comments.deleteMany({
+    "email": "victor_patel@fakegmail.com",
+    "date": { $gt: new Date("1979-12-31"), $lt: new Date("1981-01-01") }
+});
+
+const info_after_delete = db.comments.find({
+    "email": "victor_patel@fakegmail.com",
+    "date": { $gt: new Date("1979-12-31"), $lt: new Date("1981-01-01") }
+});
+console.log(" INFO AFTER DELETE: ", info_after_delete);
