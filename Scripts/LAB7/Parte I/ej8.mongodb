@@ -10,7 +10,7 @@
 use("mflix");
 
 const last_info = db.users.find({ "email": "joel.macdonel@fakegmail.com" });
-console.log(" LAST INFO: ", last_info)
+console.log(" LAST INFO: ", last_info);
 
 db.users.updateOne(
     { "email": "joel.macdonel@fakegmail.com" },
@@ -19,7 +19,7 @@ db.users.updateOne(
 );
 
 const update1 = db.users.find({ "email": "joel.macdonel@fakegmail.com" });
-console.log(" FIRST UPDATE: ", update1)
+console.log(" FIRST UPDATE: ", update1);
 
 db.users.updateOne(
     { "email": "joel.macdonel@fakegmail.com" },
@@ -28,4 +28,4 @@ db.users.updateOne(
 );
 
 const update2 = db.users.find({ "email": "joel.macdonel@fakegmail.com" });
-console.log(" SECOND UPDATE: ", update2)
+console.log(" SECOND UPDATE: ", update2);
