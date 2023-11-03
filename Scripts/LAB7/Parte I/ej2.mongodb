@@ -1,0 +1,25 @@
+/*
+    Ejercicio 2:
+
+    Listar el título, año, actores (cast), directores y rating de las 10 películas con mayor
+    rating (“imdb.rating”) de la década del 90. ¿Cuál es el valor del rating de la película que
+    tiene mayor rating? (Hint: Chequear que el valor de “imdb.rating” sea de tipo “double”).
+*/
+
+use("mflix");
+
+db.movies.find(
+    {
+        "year": { $gte: 1990, $lte: 1999 }, // --> Es peli de la década de los 90
+        "imdb.rating": { $exists: 1, $type: "double" } // --> Tiene rating y es de tipo double
+    },
+    {
+        "title": 1,
+        "year": 1,
+        "cast": 1,
+        "directors": 1,
+        "imdb.rating": 1
+    }
+).sort(
+    { "imdb.rating": -1 }
+).limit(10);
