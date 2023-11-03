@@ -1,0 +1,31 @@
+/*
+    Ejercicio 8:
+
+    Actualizar el valor de la contraseña del usuario cuyo email es
+    joel.macdonel@fakegmail.com a "some password". La misma consulta debe poder
+    insertar un nuevo usuario en caso que el usuario no exista. Ejecute la consulta dos
+    veces. ¿Qué operación se realiza en cada caso? (Hint: usar upserts).
+*/
+
+use("mflix");
+
+const last_info = db.users.find({ "email": "joel.macdonel@fakegmail.com" });
+console.log(" LAST INFO: ", last_info)
+
+db.users.updateOne(
+    { "email": "joel.macdonel@fakegmail.com" },
+    { $set: { "password": "some password" } },
+    { upsert: true }
+);
+
+const update1 = db.users.find({ "email": "joel.macdonel@fakegmail.com" });
+console.log(" FIRST UPDATE: ", update1)
+
+db.users.updateOne(
+    { "email": "joel.macdonel@fakegmail.com" },
+    { $set: { "password": "some password 2" } },
+    { upsert: true }
+);
+
+const update2 = db.users.find({ "email": "joel.macdonel@fakegmail.com" });
+console.log(" SECOND UPDATE: ", update2)
