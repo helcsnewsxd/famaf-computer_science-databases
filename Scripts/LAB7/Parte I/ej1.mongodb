@@ -1,0 +1,94 @@
+/*
+    Ejercicio 1:
+        Insertar 5 nuevos usuarios en la colección users. Para cada nuevo usuario creado, insertar al menos un 
+        comentario realizado por el usuario en la colección comments.
+*/
+
+// Seleccionar la DB a usar
+use("mflix");
+
+// Insertar los usuarios
+
+db.users.insertMany([
+    {
+        "name": "User1",
+        "email": "User1@gmail.com",
+        "password": "notSecurePasswordForUser1"
+    },
+    {
+        "name": "User2",
+        "email": "User2@gmail.com",
+        "password": "notSecurePasswordForUser2"
+    },
+    {
+        "name": "User3",
+        "email": "User3@gmail.com",
+        "password": "notSecurePasswordForUser3"
+    },
+    {
+        "name": "User4",
+        "email": "User4@gmail.com",
+        "password": "notSecurePasswordForUser4"
+    },
+    {
+        "name": "User5",
+        "email": "User5@gmail.com",
+        "password": "notSecurePasswordForUser5"
+    }
+]);
+
+// Insertar comentarios para los usuarios seleccionados
+
+db.comments.insertMany([
+    {
+        "name": "User1",
+        "email": "User1@gmail.com",
+        "movie_id": ObjectId("573a1390f29313caabcd418c"),
+        "text": "COMMENT FOR USER 1",
+        "date": new Date()
+    },
+    {
+        "name": "User2",
+        "email": "User2@gmail.com",
+        "movie_id": ObjectId("573a1390f29313caabcd418c"),
+        "text": "COMMENT FOR USER 2",
+        "date": new Date()
+    },
+    {
+        "name": "User3",
+        "email": "User3@gmail.com",
+        "movie_id": ObjectId("573a1390f29313caabcd418c"),
+        "text": "COMMENT FOR USER 3",
+        "date": new Date()
+    },
+    {
+        "name": "User4",
+        "email": "User4@gmail.com",
+        "movie_id": ObjectId("573a1390f29313caabcd418c"),
+        "text": "COMMENT FOR USER 4",
+        "date": new Date()
+    },
+    {
+        "name": "User5",
+        "email": "User5@gmail.com",
+        "movie_id": ObjectId("573a1390f29313caabcd418c"),
+        "text": "COMMENT FOR USER 5",
+        "date": new Date()
+    }
+]);
+
+
+// ============================= PARA CHEQUEAR SI SE HIZO =============================
+
+// Chequear que se crearon los usuarios
+
+const users_query = db.users.find({"name": { $regex: "^User" }}, {}).pretty();
+
+// Chequear que se crearon los comentarios
+
+const comments_query = db.comments.find({"name": { $regex: "^User" }}, {}).pretty();
+
+// Printear las queries para chequear --> Se ve desde el "Playground output"
+
+console.log("===== Users: =====", users_query);
+console.log("===== Comments: =====", comments_query);
