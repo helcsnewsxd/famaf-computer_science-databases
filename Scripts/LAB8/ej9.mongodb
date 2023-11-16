@@ -1,0 +1,59 @@
+/**
+ * Ejercicio 9:
+ *      Crear una vista con los 5 géneros con mayor cantidad de comentarios, junto con la
+cantidad de comentarios.
+ */
+
+use('mflix');
+
+pipeline_operation = [
+  {
+    $lookup: {
+      from: 'comments',
+      localField: '_id',
+      foreignField: 'movie_id',
+      as: 'comment_data'
+    }
+  },
+  {
+    $addFields: {
+      amount_comments: {
+        $size: '$comment_data'
+      }
+    }
+  },
+  {
+    $unwind: '$genres'
+  },
+  {
+    $group: {
+      _id: '$genres',
+      amount_comments: {
+        $sum: '$amount_comments'
+      }
+    }
+  },
+  {
+    $sort: {
+      amount_comments: -1
+    }
+  },
+  {
+    $limit: 5
+  },
+  {
+    $project: {
+      _id: 0,
+      genre: '$_id',
+      amount_comments: '$amount_comments'
+    }
+  }
+];
+
+db.createView(
+  'top5_commented_genres',
+  'movies',
+  pipeline_operation
+);
+
+db.top5_commented_genres.find({}).pretty();
