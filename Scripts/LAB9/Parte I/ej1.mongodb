@@ -1,0 +1,106 @@
+/**
+ * Ejercicio 1:
+ *      Especificar en la colección users las siguientes reglas de validación: El campo name
+ *      (requerido) debe ser un string con un máximo de 30 caracteres, email (requerido) debe
+ *      ser un string que matchee con la expresión regular: "^(.*)@(.*)\\.(.{2,4})$" ,
+ *      password (requerido) debe ser un string con al menos 50 caracteres.
+ */
+
+use('mflix');
+
+// Regla de validación
+
+db.runCommand({
+  collMod: 'users',
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['name', 'email', 'password'],
+      properties: {
+        name: {
+          bsonType: 'string',
+          maxLength: 40
+        },
+        email: {
+          bsonType: 'string',
+          pattern: '^(.*)@(.*)\\.(.{2,4})$'
+        },
+        password: {
+          bsonType: 'string',
+          minLength: 50
+        }
+      }
+    }
+  }
+});
+
+// Ejemplos de correcta insersión
+
+db.users.insert({
+  name: 'Emanuel',
+  email: 'mailDeEjemplo@gmail.com',
+  password: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz'
+});
+
+db.users.insert({
+  name: 'Emanuel Nicolás',
+  email: 'esteEsUnMailDeEjemploCorrectoJeJe@gmail.com',
+  password: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx'
+});
+
+db.users.insert({
+  name: 'Buenassssssssssssssssssssssss',
+  email: 'mailDeEjemplo@outlook.com',
+  password: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy'
+});
+
+db.users.insert({
+  name: 'Emanuel',
+  email: '23498tr7fuif@oigvfjd.asdf',
+  password: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzregfiuvhsdbjkrewgvsioujdfbhn4389t35y87328r'
+});
+
+db.users.insert({
+  name: 'A1234erftg43',
+  email: 'mailDeEjemplo@34y5hteb.qw',
+  password: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz29487tgr3uhdxcvb'
+});
+
+// Ejemplos de incorrecta insersión
+
+// No tiene name
+
+db.users.insert({
+  email: 'esteEsUnMailDeEjemploCorrectoJeJe@gmail.com',
+  password: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx'
+});
+
+// No tiene email
+
+db.users.insert({
+  name: 'Emanuel Nicolás',
+  password: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx'
+});
+
+// No tiene password
+
+db.users.insert({
+  name: 'Emanuel Nicolás',
+  email: 'esteEsUnMailDeEjemploCorrectoJeJe@gmail.com'
+});
+
+// No cumple regex de email
+
+db.users.insert({
+  name: 'Emanuel Nicolás',
+  email: 'esteEsUnMailDeEjemploInCorrectoJeJeGmailCom',
+  password: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx'
+});
+
+// No cumple tamaño mínimo de password
+
+db.users.insert({
+  name: 'Emanuel Nicolás',
+  email: 'esteEsUnMailDeEjemploCorrectoJeJe@gmail.com',
+  password: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvw'
+});
