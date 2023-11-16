@@ -1,0 +1,132 @@
+/**
+ * Ejercicio 12:
+ *      Listar el id y nombre de los restaurantes junto con su puntuación máxima, mínima y la
+ *      suma total. Se puede asumir que el restaurant_id es único.
+ *        a. Resolver con $group y accumulators.
+ *        b. Resolver con expresiones sobre arreglos (por ejemplo, $sum) pero sin $group.
+ *        c. Resolver como en el punto b) pero usar $reduce para calcular la puntuación total.
+ *        d. Resolver con find
+ */
+
+use('restaurantdb');
+
+// Item a ==> Con $group y accumulators
+db.restaurants.aggregate([
+  {
+    $unwind: '$grades'
+  },
+  {
+    $match: {
+      'grades.score': {
+        $type: 'number'
+      }
+    }
+  },
+  {
+    $group: {
+      _id: {
+        id: '$restaurant_id',
+        name: '$name'
+      },
+      max_score: {
+        $max: '$grades.score'
+      },
+      min_score: {
+        $min: '$grades.score'
+      },
+      sum_score: {
+        $sum: '$grades.score'
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      id: '$_id.id',
+      name: '$_id.name',
+      max_score: 1,
+      min_score: 1,
+      sum_score: 1
+    }
+  },
+  {
+    $sort: {
+      sum_score: -1
+    }
+  }
+]);
+
+// Item b =+> Con expresiones sobre arreglos ($sum) pero sin $group
+db.restaurants.aggregate([
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      restaurant_id: 1,
+      max_score: {
+        $max: '$grades.score'
+      },
+      min_score: {
+        $min: '$grades.score'
+      },
+      sum_score: {
+        $sum: '$grades.score'
+      }
+    }
+  },
+  {
+    $sort: {
+      sum_score: -1
+    }
+  }
+]);
+
+// Item c ==> (b) pero usando $reduce para calcular putuacion total
+db.restaurants.aggregate([
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      restaurant_id: 1,
+      max_score: {
+        $max: '$grades.score'
+      },
+      min_score: {
+        $min: '$grades.score'
+      },
+      sum_score: {
+        $reduce: {
+          input: '$grades.score',
+          initialValue: 0,
+          in: {
+            $add: ["$$value", "$$this"]
+          }
+        }
+      }
+    }
+  },
+  {
+    $sort: {
+      sum_score: -1
+    }
+  }
+]);
+
+// Item d ==> Con find =+> REVISAR PORQUE NO ANDA BIEN
+db.restaurants.find(
+  {},
+  {
+    _id: 0,
+    name: 1,
+    restaurant_id: 1,
+    max_score: {
+      $max: '$grades.score'
+    },
+    min_score: {
+      $min: '$grades.score'
+    },
+    sum_score: {
+      $sum: '$grades.score'
+    }
+  }
+);
