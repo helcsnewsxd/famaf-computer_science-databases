@@ -1,0 +1,128 @@
+/**
+ * Ejercicio 5:
+ *      Crear una colección userProfiles con las siguientes reglas de validación: Tenga un
+ *      campo user_id (requerido) de tipo “objectId”, un campo language (requerido) con alguno
+ *      de los siguientes valores [ “English”, “Spanish”, “Portuguese” ] y un campo
+ *      favorite_genres (no requerido) que sea un array de strings sin duplicados.
+ */
+
+use('mflix');
+
+validation_rules = {
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: [
+        'user_id',
+        'language'
+      ],
+      properties: {
+        user_id: {
+          bsonType: 'objectId'
+        },
+        language: {
+          enum: [
+            'English',
+            'Spanish',
+            'Portuguese'
+          ]
+        },
+        favorite_genres: {
+          bsonType: 'array',
+          items: {
+            bsonType: 'string'
+          },
+          uniqueItems: true
+        }
+      }
+    }
+  }
+};
+
+db.createCollection(
+  'userProfiles',
+  validation_rules
+);
+
+// 5 insersiones correctas
+
+db.userProfiles.insertOne({
+  user_id: new ObjectId(),
+  language: 'Spanish',
+  favorite_genres: [
+    'Drama',
+    'Accion'
+  ]
+});
+
+db.userProfiles.insertOne({
+  user_id: new ObjectId(),
+  language: 'English',
+  favorite_genres: [
+    'Drama',
+    'Accion'
+  ]
+});
+
+db.userProfiles.insertOne({
+  user_id: new ObjectId(),
+  language: 'Portuguese',
+  favorite_genres: [
+    'Drama',
+    'Accion'
+  ]
+});
+
+db.userProfiles.insertOne({
+  user_id: new ObjectId(),
+  language: 'Spanish'
+});
+
+db.userProfiles.insertOne({
+  user_id: new ObjectId(),
+  language: 'Spanish',
+  favorite_genres: [
+    'Drama'
+  ]
+});
+
+// 5 insersiones incorrectas
+
+db.userProfiles.insertOne({
+  language: 'Spanish',
+  favorite_genres: [
+    'Drama'
+  ]
+});
+
+db.userProfiles.insertOne({
+  user_id: '12456tg',
+  language: 'Spanish',
+  favorite_genres: [
+    'Drama'
+  ]
+});
+
+db.userProfiles.insertOne({
+  user_id: new ObjectId(),
+  favorite_genres: [
+    'Drama'
+  ]
+});
+
+db.userProfiles.insertOne({
+  user_id: new ObjectId(),
+  language: 'Español',
+  favorite_genres: [
+    'Drama'
+  ]
+});
+
+db.userProfiles.insertOne({
+  user_id: new ObjectId(),
+  language: 'Spanish',
+  favorite_genres: [
+    NumberInt(13345),
+    NumberInt(2487)
+  ]
+});
