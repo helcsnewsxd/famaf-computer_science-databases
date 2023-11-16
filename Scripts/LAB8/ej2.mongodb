@@ -6,20 +6,20 @@
 use('mflix');
 
 db.theaters.aggregate([
-    {
-        $group: {
-            _id: '$location.address.state',
-            count: {
-                $count: {}
-            }
-        }
-    },
-    {
-        $match: {
-          count: { $gte: 2 }
-        }
-    },
-    {
-        $count: 'amount_theaters'
+  {
+    $group: {
+      _id: '$location.address.state',
+      count: {
+        $count: {}
+      }
     }
+  },
+  {
+    $match: {
+      count: { $gte: 2 }
+    }
+  },
+  {
+    $count: 'amount_theaters'
+  }
 ]);

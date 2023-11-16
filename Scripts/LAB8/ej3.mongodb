@@ -8,19 +8,19 @@ use('mflix');
 
 // Sin pipeline
 db.movies.countDocuments(
-    {
-        directors: 'Louis Lumière'
-    }
+  {
+    directors: 'Louis Lumière'
+  }
 );
 
 // Con pipeline
 db.movies.aggregate([
-    {
-        $match: {
-          directors: 'Louis Lumière'
-        }
-    },
-    {
-        $count: 'amount_of_movies'
+  {
+    $match: {
+      directors: 'Louis Lumière'
     }
+  },
+  {
+    $count: 'amount_of_movies'
+  }
 ]);

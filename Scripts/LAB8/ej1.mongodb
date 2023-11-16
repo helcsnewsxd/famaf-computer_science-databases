@@ -6,12 +6,12 @@
 use('mflix');
 
 db.theaters.aggregate([
-    {
-        $group: {
-            _id: '$location.address.state',
-            count: {
-                $count: {}
-            }
-        }
+  {
+    $group: {
+      _id: '$location.address.state',
+      count: {
+        $count: {}
+      }
     }
+  }
 ]);

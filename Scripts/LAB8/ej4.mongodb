@@ -8,25 +8,25 @@ use('mflix');
 
 // Sin pipeline
 db.movies.countDocuments(
-    {
-        year: {
-            $gte: 1950,
-            $lte: 1959
-        }
+  {
+    year: {
+      $gte: 1950,
+      $lte: 1959
     }
+  }
 );
 
 // Con pipeline
 db.movies.aggregate([
-    {
-        $match: {
-          year: {
-            $gte: 1950,
-            $lte: 1959
-          }
-        }
-    },
-    {
-        $count: 'amount_of_movies'
+  {
+    $match: {
+      year: {
+        $gte: 1950,
+        $lte: 1959
+      }
     }
+  },
+  {
+    $count: 'amount_of_movies'
+  }
 ]);
