@@ -1,0 +1,88 @@
+/**
+ * Ejercicio 11:
+ *      Listar los usuarios que realizaron comentarios durante el mismo mes de lanzamiento de
+ *      la película comentada, mostrando Nombre, Email, fecha del comentario, título de la
+ *      película, fecha de lanzamiento. HINT: usar $lookup con multiple condiciones
+ */
+
+use('mflix');
+
+db.movies.aggregate([
+  {
+    $match: {
+      'released': {
+        $exists: 1
+      }
+    }
+  },
+  {
+    $lookup: {
+      from: 'comments',
+      localField: '_id',
+      foreignField: 'movie_id',
+      let: { movie_date: '$released' },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: [
+                [{$year: '$$movie_date'}, {$month: '$$movie_date'}],
+                [{$year: '$date'}, {$month: '$date'}]
+              ]
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            name: '$name',
+            email: '$email',
+            date: '$date'
+          }
+        }
+      ],
+      as: 'comments'
+    }
+  },
+  {
+    $unwind: '$comments'
+  },
+  {
+    $group: {
+      _id: {
+        name: '$comments.name',
+        email: '$comments.email',
+      },
+      amount_movies_commented: {
+        $count: {}
+      },
+      movies_commented: {
+        $addToSet: {
+          movie_title: '$title',
+          movie_release_date: '$released',
+          comment_date: '$comments.date'
+        }
+      }
+    }
+  },
+  {
+    $match: {
+      amount_movies_commented: {
+        $gte: 1
+      }
+    }
+  },
+  {
+    $sort: {
+      amount_movies_commented: -1
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      user_name: '$_id.name',
+      user_email: '$_id.email',
+      movies_commented: '$movies_commented'
+    }
+  }
+])
