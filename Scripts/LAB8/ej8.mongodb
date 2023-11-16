@@ -1,0 +1,43 @@
+/**
+ * Ejercicio 8:
+ *      Título, año y cantidad de comentarios de las 10 películas con más comentarios.
+ */
+
+use('mflix');
+
+db.comments.aggregate([
+  {
+    $group: {
+      _id: '$movie_id',
+      amount_comments: {
+        $count: {}
+      }
+    }
+  },
+  {
+    $sort: {
+      amount_comments: -1
+    }
+  },
+  {
+    $limit: 10
+  },
+  {
+    $lookup: {
+      from: 'movies',
+      localField: '_id',
+      foreignField: '_id',
+      as: 'movie_data'
+    }
+  },
+  {
+    $unwind: '$movie_data'
+  },
+  {
+    $project: {
+      title: '$movie_data.title',
+      year:'$movie_data.year',
+      amount_comments: '$amount_comments',
+    }
+  }
+]);
