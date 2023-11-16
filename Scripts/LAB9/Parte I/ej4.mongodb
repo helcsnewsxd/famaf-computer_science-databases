@@ -1,0 +1,135 @@
+/**
+ * Ejercicio 4:
+ *      Especificar en la colección movies las siguientes reglas de validación: El campo title
+ *      (requerido) es de tipo string, year (requerido) int con mínimo en 1900 y máximo en 3000,
+ *      y que tanto cast, directors, countries, como genres sean arrays de strings sin
+ *      duplicados.
+ *          a. Hint: Usar el constructor NumberInt() para especificar valores enteros a la hora
+ *             de insertar documentos. Recordar que mongo shell es un intérprete javascript y
+ *             en javascript los literales numéricos son de tipo Number (double)
+ */
+
+use('mflix');
+
+// Reglas de validación
+db.runCommand({
+  collMod: 'movies',
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: [
+        'title',
+        'year'
+      ],
+      properties: {
+        title: {
+          bsonType: 'string'
+        },
+        year: {
+          bsonType: 'int',
+          minimum: NumberInt(1900),
+          maximum: NumberInt(3000)
+        },
+        cast: {
+          bsonType: ['string'],
+          uniqueItems: true
+        },
+        directors: {
+          bsonType: ['string'],
+          uniqueItems: true
+        },
+        countries: {
+          bsonType: ['string'],
+          uniqueItems: true
+        },
+        genres: {
+          bsonType: ['string'],
+          uniqueItems: true
+        }
+      }
+    }
+  }
+});
+
+// 5 casos correctos
+
+db.movies.insertOne({
+  title: 'Meteoro Racer',
+  year: NumberInt(2008),
+  cast: ['Ni idea'],
+  directors: ['Las de matrix'],
+  countries: ['Estados Unidos'],
+  genres: ['Familiar']
+});
+
+db.movies.insertOne({
+  title: 'Meteoro Racer',
+  year: NumberInt(2008)
+});
+
+db.movies.insertOne({
+  title: 'Meteoro Racer',
+  year: NumberInt(2008),
+  cast: ['Ni idea']
+});
+
+db.movies.insertOne({
+  title: 'Meteoro Racer',
+  year: NumberInt(2008),
+  cast: ['Ni idea'],
+  directors: ['Las de matrix'],
+});
+
+db.movies.insertOne({
+  title: 'Meteoro Racer',
+  year: NumberInt(2008),
+  cast: ['Ni idea'],
+  directors: ['Las de matrix', 'Sip, ni idea'],
+  countries: ['Estados Unidos', 'Argentina papaaaa'],
+  genres: ['Familiar', 'Genero de la mejor peli :)']
+});
+
+// 5 casos incorrectos
+
+db.movies.insertOne({
+  title: 'Meteoro Racer',
+  year: '2008',
+  cast: ['Ni idea'],
+  directors: ['Las de matrix'],
+  countries: ['Estados Unidos'],
+  genres: ['Familiar']
+});
+
+db.movies.insertOne({
+  title: 'Meteoro Racer',
+  cast: ['Ni idea'],
+  directors: ['Las de matrix'],
+  countries: ['Estados Unidos'],
+  genres: ['Familiar']
+});
+
+db.movies.insertOne({
+  year: NumberInt(2008),
+  cast: ['Ni idea'],
+  directors: ['Las de matrix'],
+  countries: ['Estados Unidos'],
+  genres: ['Familiar']
+});
+
+db.movies.insertOne({
+  title: 'Meteoro Racer',
+  year: NumberInt(2008),
+  cast: [NumberInt(2008)],
+  directors: ['Las de matrix'],
+  countries: ['Estados Unidos'],
+  genres: ['Familiar']
+});
+
+db.movies.insertOne({
+  title: 'Meteoro Racer',
+  year: NumberInt(2008),
+  cast: 'Ni idea',
+  directors: ['Las de matrix'],
+  countries: ['Estados Unidos'],
+  genres: ['Familiar']
+});
