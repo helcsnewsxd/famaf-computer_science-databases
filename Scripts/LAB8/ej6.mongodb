@@ -1,0 +1,29 @@
+/**
+ * Ejercicio 6:
+ *      Top 10 de usuarios con mayor cantidad de comentarios, mostrando Nombre, Email y
+Cantidad de Comentarios
+ */
+
+use('mflix');
+
+db.comments.aggregate([
+  {
+    $group: {
+      _id: {
+        name: '$name',
+        email: '$email'
+      },
+      amount_comments: {
+        $count: {}
+      }
+    }
+  },
+  {
+    $sort: {
+      amount_comments: -1
+    }
+  },
+  {
+    $limit: 10
+  }
+]);
