@@ -1,0 +1,25 @@
+/**
+ * Ejercicio 2:
+ *      Cantidad de estados con al menos dos cines (theaters) registrados
+ */
+
+use('mflix');
+
+db.theaters.aggregate([
+    {
+        $group: {
+            _id: '$location.address.state',
+            count: {
+                $count: {}
+            }
+        }
+    },
+    {
+        $match: {
+          count: { $gte: 2 }
+        }
+    },
+    {
+        $count: 'amount_theaters'
+    }
+]);
