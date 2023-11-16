@@ -1,0 +1,217 @@
+/**
+ * Ejercicio 3:
+ *      Especificar en la colección theaters las siguientes reglas de validación: El campo
+ *      theaterId (requerido) debe ser un int y location (requerido) debe ser un object con:
+ *          a. un campo address (requerido) que sea un object con campos street1, city, state
+ *             y zipcode todos de tipo string y requeridos
+ *          b. un campo geo (no requerido) que sea un object con un campo type, con valores
+ *             posibles “Point” o null y coordinates que debe ser una lista de 2 doubles
+ * 
+ *      Por último, estas reglas de validación no deben prohibir la inserción o actualización de
+ *      documentos que no las cumplan sino que solamente deben advertir
+ */
+
+use('mflix');
+
+// Reglas de validación
+db.runCommand({
+  collMod: 'theaters',
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: [
+        'theaterId',
+        'location'
+      ],
+      properties: {
+        theaterId: {
+          bsonType: 'int'
+        },
+        location: {
+          bsonType: 'object',
+          required: ['address'],
+          properties: {
+            address: {
+              bsonType: 'object',
+              required: ['street1', 'city', 'state', 'zipcode'],
+              properties: {
+                street1: {
+                  bsonType: 'string'
+                },
+                city: {
+                  bsonType: 'string'
+                },
+                state: {
+                  bsonType: 'string'
+                },
+                zipcode: {
+                  bsonType: 'string'
+                }
+              }
+            },
+            geo: {
+              bsonType: 'object',
+              properties: {
+                type: {
+                  enum: ['Point', null]
+                },
+                coordinates: {
+                  bsonType: ['double'],
+                  minItems: 2,
+                  maxItems: 2,
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  validationAction: 'warn'
+});
+
+// Para chequear que se haya puesto bien
+db.getCollectionInfos({
+  name: 'theaters'
+});
+
+// 5 casos correctos
+db.theaters.insertOne({
+  theaterId: 1,
+  location: {
+    address: {
+      street1: 'streetExample',
+      city: 'cityExample',
+      state: 'stateExample',
+      zipcode: 'zipcodeExample'
+    }
+  }
+});
+
+db.theaters.insertOne({
+  theaterId: 1,
+  location: {
+    address: {
+      street1: 'streetExample',
+      city: 'cityExample',
+      state: 'stateExample',
+      zipcode: 'zipcodeExample'
+    },
+    geo: {}
+  }
+});
+
+db.theaters.insertOne({
+  theaterId: 1,
+  location: {
+    address: {
+      street1: 'streetExample',
+      city: 'cityExample',
+      state: 'stateExample',
+      zipcode: 'zipcodeExample'
+    },
+    geo: {
+      type: 'Point'
+    }
+  }
+});
+
+db.theaters.insertOne({
+  theaterId: 1,
+  location: {
+    address: {
+      street1: 'streetExample',
+      city: 'cityExample',
+      state: 'stateExample',
+      zipcode: 'zipcodeExample'
+    },
+    geo: {
+      type: null
+    }
+  }
+});
+
+db.theaters.insertOne({
+  theaterId: 1,
+  location: {
+    address: {
+      street1: 'streetExample',
+      city: 'cityExample',
+      state: 'stateExample',
+      zipcode: 'zipcodeExample'
+    },
+    geo: {
+      type: 'Point',
+      coordinates: [2.2, 4.5]
+    }
+  }
+});
+
+// 5 casos incorrectos (ver warnings en los logs de MongoDB)
+
+db.theaters.insertOne({
+  theaterId: 1
+});
+
+db.theaters.insertOne({
+  theaterId: 1,
+  location: {
+    address: {
+      street1: 'streetExample',
+      city: 'cityExample',
+      state: 'stateExample',
+      zipcode: 'zipcodeExample'
+    },
+    geo: {
+      type: 'Point',
+      coordinates: [2.2]
+    }
+  }
+});
+
+db.theaters.insertOne({
+  theaterId: 1,
+  location: {
+    address: {
+      street1: 'streetExample',
+      city: 'cityExample',
+      state: 'stateExample',
+      zipcode: 'zipcodeExample'
+    },
+    geo: {
+      type: 'Point',
+      coordinates: [2.2, 4.5, 4.5]
+    }
+  }
+});
+
+db.theaters.insertOne({
+  theaterId: 1,
+  location: {
+    address: {
+      street1: 'streetExample',
+      city: 'cityExample',
+      state: 'stateExample',
+      zipcode: 'zipcodeExample'
+    },
+    geo: {
+      type: 'TYPEOFGEO',
+      coordinates: [2.2, 4.5]
+    }
+  }
+});
+
+db.theaters.insertOne({
+  theaterId: 1,
+  location: {
+    address: {
+      street1: 'streetExample',
+      city: 'cityExample',
+      state: 'stateExample'
+    },
+    geo: {
+      type: 'Point',
+      coordinates: [2.2, 4.5]
+    }
+  }
+});
