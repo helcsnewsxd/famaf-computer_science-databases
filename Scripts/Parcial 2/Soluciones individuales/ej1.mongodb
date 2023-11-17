@@ -1,0 +1,64 @@
+/**
+ * ======================================== EJERCICIO 1 ========================================
+ * 
+ *    Buscar las ventas realizadas en "London", "Austin" o "San Diego"; a un customer con
+ *    edad mayor-igual a 18 años que tengan productos que hayan salido al menos 1000
+ *    y estén etiquetados (tags) como de tipo "school" o "kids" (pueden tener más
+ *    etiquetas).
+ * 
+ *    Mostrar el id de la venta con el nombre "sale", la fecha (“saleDate"), el storeLocation,
+ *    y el "email del cliente. No mostrar resultados anidados.
+ * 
+ * =============================================================================================
+ */
+
+use('supplies');
+
+/**
+ * Respecto a este ejercicio, se toma como consideración que AMBAS CONDICIONES para los items
+ * deben ser correctas para AL MENOS UN item del customer.
+ * Además, se considera que la condición de que el producto haya salido al menos 1000, hace
+ * referencia al precio del producto independientemente de la cantidad que lleve.
+ */
+
+db.sales.find(
+  {
+    // Filtros
+    storeLocation: {
+      // Condición: ventas realizadas en "London", "Austin" o "San Diego"
+      $in: ['London', 'Austin', 'San Diego']
+    },
+    'customer.age': {
+      // Condición: customer con edad mayor-igual a 18 años 
+      $gte: 18
+    },
+    items: {
+      // Condición: que tengan productos que hayan salido al menos 1000 y estén
+      // etiquetados (tags) como de tipo "school" o "kids" (pueden tener más etiquetas).
+      $elemMatch: {
+        price: {
+          $type: 'number',
+          $gte: 1000
+        },
+        $or: [
+          {
+            tags: 'school'
+          },
+          {
+            tags: 'kids'
+          }
+        ]
+      }
+    }
+  },
+  {
+    // Proyección
+    _id: 0,
+    sale: '$_id',
+    saleDate: 1,
+    storeLocation: 1,
+    customer_email: '$customer.email',
+    age: '$customer.age',
+    items: '$items'
+  }
+);
