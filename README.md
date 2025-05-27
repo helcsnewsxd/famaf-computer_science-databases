@@ -1,3 +1,8 @@
+> [!note]
+> This repository contains all materials for the 2023 Databases course of the Computer Science degree at FAMAF, Universidad Nacional de Córdoba.
+>
+> The contents include labs, exercises, and theoretical notes primarily in Spanish prepared for academic purposes.
+
 # Bases de Datos - 2023
 
 El presente repositorio contiene todo el material correspondiente a la cursada de la materia "Bases de Datos" en el año 2023, de la carrera de Licenciatura en Ciencias de la Computación en la Facultad de Matemática, Astronomía, Física y Computación (FAMAF) de la Universidad Nacional de Córdoba (UNC).
